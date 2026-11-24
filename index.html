@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FOLIORA - Premium Online Book Library</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{
+ --bg:#090909;--panel:#171717;--text:#fff;
+ --muted:#aaa;--gold:#d6ad45;--border:#57451f;
+}
+body.cyanine{--bg:#eafafa;--panel:#fff;--text:#153c40;--muted:#55777a;--gold:#009c9c;--border:#9edada}
+body.rose{--bg:#fff0f3;--panel:#fff;--text:#512b38;--muted:#956b79;--gold:#d94b70;--border:#efbdca}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+header{background:var(--panel);border-bottom:1px solid var(--border);padding:18px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.logo{font-size:27px;font-weight:900;letter-spacing:3px;color:var(--gold)}
+button{background:linear-gradient(135deg,var(--gold),#a77b24);color:#111;border:0;padding:11px 16px;font-weight:bold;cursor:pointer;clip-path:polygon(0 0,90% 0,100% 25%,100% 100%,10% 100%,0 75%)}
+button:hover{opacity:.85}
+nav{display:flex;flex-wrap:wrap;gap:7px;padding:12px;justify-content:center;background:var(--panel)}
+nav button{background:transparent;color:var(--gold);border:1px solid var(--border);clip-path:none}
+.container{max-width:1100px;margin:auto;padding:18px}
+.page{display:none}.page.active{display:block}
+.hero{padding:60px 15px;text-align:center;background:linear-gradient(rgba(9,9,9,0.7),rgba(9,9,9,0.8)),url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=1200&auto=format&fit=crop') no-repeat center center/cover;border:1px solid var(--gold);margin:15px 0 25px;clip-path:polygon(0 0,95% 0,100% 12%,100% 100%,5% 100%,0 88%)}
+.hero h1{font-size:40px;color:#f5d77e;letter-spacing:3px}
+.hero p{color:#ddd}
+h2,h3{color:var(--gold)}
+.section-title{margin:25px 0 15px}
+.menu-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.menu-card{min-height:115px;padding:20px 8px;background:linear-gradient(145deg,var(--panel),#101010);border:1px solid var(--border);color:var(--gold);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;text-align:center;cursor:pointer;clip-path:polygon(0 0,92% 0,100% 18%,100% 100%,8% 100%,0 82%)}
+.menu-card strong{font-size:17px}
+.menu-card span{font-size:27px}
+.panel,.book-card{background:var(--panel);border:1px solid var(--border);padding:18px;margin:14px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.book-card h3{margin-top:0}
+input,select{width:100%;padding:13px;margin:8px 0 16px;background:var(--bg);color:var(--text);border:1px solid var(--border)}
+label{display:block;color:var(--gold);font-weight:bold}
+.small{font-size:13px;color:var(--muted)}
+.price{color:var(--gold);font-weight:bold}
+.hidden{display:none!important}
+#qrcode{background:white;padding:10px;width:max-content;margin:15px auto}
+footer{text-align:center;padding:25px;color:var(--muted);border-top:1px solid var(--border);margin-top:30px}
+a{color:var(--gold)}
+@media(max-width:480px){.hero h1{font-size:30px}.menu-card strong{font-size:15px}}
+</style>
+</head>
+<body>
+
+<header>
+ <div class="logo">FOLIORA</div>
+ <button onclick="showPage('signin')">SIGN IN</button>
+</header>
+
+<nav>
+ <button onclick="showPage('home')">Home</button>
+ <button onclick="showPage('normal')">Free Books</button>
+ <button onclick="showPage('premium')">Premium</button>
+ <button onclick="showPage('signin')">Sign In</button>
+ <button onclick="showPage('settings')">Settings</button>
+ <button onclick="showPage('help')">Help</button>
+</nav>
+
+<main class="container">
+
+<section id="home" class="page active">
+ <div class="hero">
+  <h1>FOLIORA</h1>
+  <p>DISCOVER. READ. COLLECT.</p>
+  <p>Your Premium Online Book Library</p>
+  <button onclick="showPage('normal')">EXPLORE BOOKS</button>
+ </div>
+
+ <h2 class="section-title">MY ACCOUNT & LIBRARY</h2>
+ <div class="menu-grid">
+  <div class="menu-card" onclick="showPage('library')"><span>📚</span><strong>My Library</strong></div>
+  <div class="menu-card" onclick="showPage('purchases')"><span>🛒</span><strong>My Purchases</strong></div>
+  <div class="menu-card" onclick="showPage('mybooks')"><span>📖</span><strong>My Books</strong></div>
+  <div class="menu-card" onclick="showPage('downloads')"><span>⬇️</span><strong>My Download Books</strong></div>
+ </div>
+
+ <h2 class="section-title">DISCOVER BOOKS</h2>
+ <div class="menu-grid">
+  <div class="menu-card" onclick="showPage('normal')"><span>📘</span><strong>Normal Books</strong></div>
+  <div class="menu-card" onclick="showPage('premium')"><span>👑</span><strong>Premium Books</strong></div>
+ </div>
+ <div class="panel">
+  <h3 id="welcome">Welcome to FOLIORA</h3>
+  <p id="userInfo" class="small">Sign in to personalize your library.</p>
+  <button onclick="showPage('signin')">Sign In / Register</button>
+ </div>
+</section>
+
+<section id="signin" class="page">
+ <h2>Sign In to FOLIORA</h2>
+ <div class="panel">
+  <h3>Continue with Google</h3>
+  <button onclick="oauthInfo('Google')">Continue with Google</button>
+  <hr>
+  <h3>Continue with Facebook</h3>
+  <button onclick="oauthInfo('Facebook')">Continue with Facebook</button>
+  <hr>
+  <h3>Mobile Number Sign In</h3>
+  <label>Mobile Number</label>
+  <input id="mobile" type="tel" placeholder="Enter mobile number">
+  <button onclick="sendDemoOTP()">Continue with Mobile</button>
+  <div id="otpArea" class="hidden">
+   <label>Enter OTP</label>
+   <input id="otp" placeholder="Demo OTP">
+   <button onclick="verifyDemoOTP()">Verify & Sign In</button>
+  </div>
+  <p class="small">Google, Facebook and real SMS OTP require authentication provider setup. The mobile flow here is a simulation.</p>
+  <p id="loginMessage"></p>
+  <button onclick="logout()">Sign Out</button>
+ </div>
+</section>
+
+<section id="library" class="page">
+ <h2>My Library</h2>
+ <p class="small">Your available books.</p>
+ <div id="libraryList" class="grid"></div>
+</section>
+
+<section id="mybooks" class="page">
+ <h2>My Books</h2>
+ <div id="myBooksList" class="grid"></div>
+</section>
+
+<section id="downloads" class="page">
+ <h2>My Download Books</h2>
+ <div id="downloadList" class="grid"></div>
+</section>
+
+<section id="purchases" class="page">
+ <h2>My Purchases</h2>
+ <div id="purchaseList" class="grid"></div>
+</section>
+
+<section id="normal" class="page">
+ <h2>Normal Books - Free</h2>
+ <input id="normalSearch" placeholder="Search books..." oninput="renderBooks('normal')">
+ <div id="normalList" class="grid"></div>
+</section>
+
+<section id="premium" class="page">
+ <h2>Premium Books</h2>
+ <input id="premiumSearch" placeholder="Search premium books..." oninput="renderBooks('premium')">
+ <div id="premiumList" class="grid"></div>
+</section>
+
+<section id="payment" class="page">
+ <div class="panel">
+  <h2>Premium Book Payment</h2>
+  <h3 id="payName"></h3>
+  <h2 id="payPrice"></h2>
+  <p>Pay using PhonePe, Google Pay or another UPI app.</p>
+  <p><b>UPI ID:</b> foliora.com@ibl</p>
+  <div id="qrcode"></div>
+  <button onclick="openUPI()">Open UPI App</button>
+  <label>Transaction Reference / UTR</label>
+  <input id="utr" placeholder="Enter your UPI transaction ID">
+  <button onclick="submitPayment()">Submit Payment Request</button>
+  <p id="paymentMessage" class="small"></p>
+  <button onclick="showPage('premium')">Back to Premium Books</button>
+ </div>
+</section>
+
+<section id="reader" class="page">
+ <h2 id="readerTitle">Book Reader</h2>
+ <div class="panel">
+  <p id="readerMessage">Use the Download button to save the PDF.</p>
+  <button onclick="downloadCurrent()">Download PDF</button>
+  <button onclick="closeReader()">Back</button>
+ </div>
+</section>
+
+<section id="settings" class="page">
+ <h2>Settings & Themes</h2>
+ <div class="panel">
+  <label>Choose Website Theme</label>
+  <select id="themeSelect" onchange="setTheme(this.value)">
+   <option value="black">Premium Black & Gold</option>
+   <option value="cyanine">Cyanine Light</option>
+   <option value="rose">Rose Light</option>
+  </select>
+  <p class="small">Choose your favourite FOLIORA appearance.</p>
+ </div>
+</section>
+
+<section id="help" class="page">
+ <h2>Help & Support</h2>
+ <div class="panel">
+  <p>Welcome to FOLIORA Support.</p>
+  <p>For assistance, contact us:</p>
+  <p><a href="mailto:helpfoliora@gmail.com">helpfoliora@gmail.com</a></p>
+  <p class="small">We are here to help you with your book library.</p>
+ </div>
+</section>
+
+<section id="login" class="page">
+ <div class="panel">
+  <h2>Admin Login</h2>
+  <label>Admin Password</label>
+  <input id="adminPassword" type="password" placeholder="Enter admin password">
+  <button onclick="loginAdmin()">Login</button>
+  <p id="adminMessage"></p>
+ </div>
+</section>
+
+<section id="admin" class="page">
+ <h2>Admin Dashboard</h2>
+ <div class="panel">
+  <h3>Upload Books</h3>
+  <label>Book Name</label>
+  <input id="bookName" placeholder="Enter book name">
+  <label>Book Category</label>
+  <select id="bookType" onchange="togglePrice()">
+   <option value="normal">Normal Book - Free</option>
+   <option value="premium">Premium Book - Paid</option>
+  </select>
+  <div id="priceBox" class="hidden">
+   <label>Price in INR</label>
+   <input id="bookPrice" type="number" min="1" placeholder="Enter price">
+  </div>
+  <label>Select PDF (Maximum 50 MB)</label>
+  <input id="bookFile" type="file" accept="application/pdf">
+  <button onclick="uploadBook()">Upload Book</button>
+  <p id="uploadMessage"></p>
+ </div>
+ <div class="panel">
+  <h3>Manage Books</h3>
+  <div id="adminBooks"></div>
+ </div>
+ <div class="panel">
+  <h3>Payment Requests</h3>
+  <div id="paymentRequests"></div>
+ </div>
+ <button onclick="logoutAdmin()">Admin Logout</button>
+</section>
+
+</main>
+
+<footer>
+ <div class="logo">FOLIORA</div>
+ <p>Discover. Read. Collect.</p>
+ <p>© 2026 FOLIORA. All Rights Reserved.</p>
+</footer>
+
+<script>
+const DB_NAME="FolioraDB";
+let db;
+let currentBook=null;
+let currentOTP="";
+
+const ADMIN_PASSWORD="2000221641";
+const UPI_ID="foliora.com@ibl";
+
+function openDB(){
+ return new Promise((resolve,reject)=>{
+  const request=indexedDB.open(DB_NAME,1);
+  request.onupgradeneeded=e=>{
+   const d=e.target.result;
+   if(!d.objectStoreNames.contains("books"))
+    d.createObjectStore("books",{keyPath:"id",autoIncrement:true});
+   if(!d.objectStoreNames.contains("requests"))
+    d.createObjectStore("requests",{keyPath:"id",autoIncrement:true});
+  };
+  request.onsuccess=()=>{db=request.result;resolve(db)};
+  request.onerror=()=>reject(request.error);
+ });
+}
+
+function store(name,mode="readonly"){
+ return db.transaction(name,mode).objectStore(name);
+}
+function getAll(name){
+ return new Promise((resolve,reject)=>{
+  const r=store(name).getAll();
+  r.onsuccess=()=>resolve(r.result);
+  r.onerror=()=>reject(r.error);
+ });
+}
+function addItem(name,item){
+ return new Promise((resolve,reject)=>{
+  const r=store(name,"readwrite").add(item);
+  r.onsuccess=()=>resolve(r.result);
+  r.onerror=()=>reject(r.error);
+ });
+}
+function updateItem(name,item){
+ return new Promise((resolve,reject)=>{
+  const r=store(name,"readwrite").put(item);
+  r.onsuccess=()=>resolve();
+  r.onerror=()=>reject(r.error);
+ });
+}
+function deleteItem(name,id){
+ return new Promise((resolve,reject)=>{
+  const r=store(name,"readwrite").delete(id);
+  r.onsuccess=()=>resolve();
+  r.onerror=()=>reject(r.error);
+ });
+}
+function getItem(name,id){
+ return new Promise((resolve,reject)=>{
+  const r=store(name).get(Number(id));
+  r.onsuccess=()=>resolve(r.result);
+  r.onerror=()=>reject(r.error);
+ });
+}
+
+function showPage(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ if(id==="normal")renderBooks("normal");
+ if(id==="premium")renderBooks("premium");
+ if(id==="library"||id==="mybooks")renderLibrary();
+ if(id==="downloads")renderDownloads();
+ if(id==="purchases")renderPurchases();
+ if(id==="admin")renderAdmin();
+}
+function setTheme(value){
+ document.body.classList.remove("cyanine","rose");
+ if(value!=="black")document.body.classList.add(value);
+ localStorage.setItem("folioraTheme",value);
+}
+function loadTheme(){
+ const t=localStorage.getItem("folioraTheme")||"black";
+ setTheme(t);
+ document.getElementById("themeSelect").value=t;
+}
+
+function oauthInfo(provider){
+ alert(provider+" Sign In needs Firebase or another authentication backend to work in production. In this demo, it is simulated.");
+}
+function sendDemoOTP(){
+ const mobile=document.getElementById("mobile").value.trim();
+ if(!/^[6-9]\d{9}$/.test(mobile)){
+  alert("Enter a valid 10-digit Indian mobile number.");
+  return;
+ }
+ currentOTP=String(Math.floor(100000+Math.random()*900000));
+ document.getElementById("otpArea").classList.remove("hidden");
+ alert("Demo OTP: "+currentOTP+" (No SMS has been sent.)");
+}
+function verifyDemoOTP(){
+ if(document.getElementById("otp").value!==currentOTP){
+  alert("Incorrect OTP.");
+  return;
+ }
+ const mobile=document.getElementById("mobile").value.trim();
+ localStorage.setItem("folioraUser",JSON.stringify({mobile}));
+ updateUser();
+ showPage("home");
+}
+function updateUser(){
+ const user=JSON.parse(localStorage.getItem("folioraUser")||"null");
+ document.getElementById("welcome").textContent=user?"Welcome to FOLIORA":"Welcome to FOLIORA";
+ document.getElementById("userInfo").textContent=user?"Signed in: "+(user.mobile||user.email||"User"):"Sign in to personalize your library.";
+}
+function logout(){
+ localStorage.removeItem("folioraUser");
+ updateUser();
+ alert("Signed out.");
+ showPage("home");
+}
+
+function loginAdmin(){
+ if(document.getElementById("adminPassword").value===ADMIN_PASSWORD){
+  sessionStorage.setItem("folioraAdmin","yes");
+  showPage("admin");
+ }else{
+  document.getElementById("adminMessage").textContent="Incorrect password.";
+ }
+}
+function logoutAdmin(){
+ sessionStorage.removeItem("folioraAdmin");
+ showPage("home");
+}
+function togglePrice(){
+ document.getElementById("priceBox").classList.toggle("hidden",document.getElementById("bookType").value!=="premium");
+}
+
+async function uploadBook(){
+ if(sessionStorage.getItem("folioraAdmin")!=="yes"){
+  alert("Admin login required.");
+  return;
+ }
+ const name=document.getElementById("bookName").value.trim();
+ const type=document.getElementById("bookType").value;
+ const price=Number(document.getElementById("bookPrice").value);
+ const file=document.getElementById("bookFile").files[0];
+ const msg=document.getElementById("uploadMessage");
+
+ if(!name||!file){msg.textContent="Enter book name and select a PDF.";return}
+ if(file.type!=="application/pdf"){msg.textContent="Only PDF files are allowed.";return}
+ if(file.size>50*1024*1024){msg.textContent="File must be smaller than 50 MB.";return}
+ if(type==="premium"&&(!price||price<=0)){msg.textContent="Enter a valid premium price.";return}
+
+ try{
+  await addItem("books",{name,type,price:type==="premium"?price:0,filename:file.name,data:file,created:Date.now()});
+  msg.textContent="Book uploaded successfully!";
+  document.getElementById("bookName").value="";
+  document.getElementById("bookPrice").value="";
+  document.getElementById("bookFile").value="";
+  renderAdmin();
+ }catch(e){msg.textContent="Upload failed. Browser storage may be full."}
+}
+
+async function renderBooks(type){
+ const books=await getAll("books");
+ const query=(document.getElementById(type+"Search")?.value||"").toLowerCase();
+ const list=document.getElementById(type+"List");
+ list.innerHTML="";
+ books.filter(b=>b.type===type&&b.name.toLowerCase().includes(query)).forEach(b=>{
+  const card=document.createElement("div");
+  card.className="book-card";
+  const title=document.createElement("h3");
+  title.textContent=b.name;
+  const info=document.createElement("p");
+  info.className="small";
+  info.textContent=type==="normal"?"Free PDF Book":"Premium PDF Book";
+  const price=document.createElement("p");
+  price.className="price";
+  price.textContent=type==="normal"?"FREE":"₹"+b.price;
+  const btn=document.createElement("button");
+  btn.textContent=type==="normal"?"Read / Download":"Buy Book";
+  btn.onclick=()=>type==="normal"?openBook(b.id):startPayment(b.id);
+  card.append(title,info,price,btn);
+  list.appendChild(card);
+ });
+ if(!list.children.length)list.textContent="No books available yet.";
+}
+
+async function renderLibrary(){
+ const books=await getAll("books");
+ const normal=books.filter(b=>b.type==="normal");
+ const purchases=await approvedBooks();
+ const available=[...normal,...purchases.map(p=>books.find(b=>b.id===p.bookId)).filter(Boolean)];
+ fillBookCards("libraryList",available);
+ fillBookCards("myBooksList",available);
+}
+function fillBookCards(id,books){
+ const list=document.getElementById(id);list.innerHTML="";
+ books.forEach(b=>{
+  const card=document.createElement("div");card.className="book-card";
+  const title=document.createElement("h3");title.textContent=b.name;
+  const read=document.createElement("button");read.textContent="Read";read.onclick=()=>openBook(b.id);
+  const down=document.createElement("button");down.textContent="Download PDF";down.onclick=()=>downloadBook(b.id);
+  card.append(title,read,down);list.appendChild(card);
+ });
+ if(!list.children.length)list.textContent="No books in your library yet.";
+}
+async function approvedBooks(){
+ const req=await getAll("requests");
+ return req.filter(r=>r.status==="approved");
+}
+async function renderPurchases(){
+ const approved=await approvedBooks();
+ const books=await getAll("books");
+ const list=document.getElementById("purchaseList");list.innerHTML="";
+ approved.forEach(p=>{
+  const b=books.find(x=>x.id===p.bookId);if(!b)return;
+  const card=document.createElement("div");card.className="book-card";
+  const title=document.createElement("h3");title.textContent=b.name;
+  const status=document.createElement("p");status.textContent="Purchase Approved";
+  const read=document.createElement("button");read.textContent="Read";read.onclick=()=>openBook(b.id);
+  const down=document.createElement("button");down.textContent="Download";down.onclick=()=>downloadBook(b.id);
+  card.append(title,status,read,down);list.appendChild(card);
+ });
+ if(!list.children.length)list.textContent="No approved purchases yet.";
+}
+async function renderDownloads(){
+ const books=await getAll("books");
+ const normal=books.filter(b=>b.type==="normal");
+ const approved=await approvedBooks();
+ const purchased=approved.map(p=>books.find(b=>b.id===p.bookId)).filter(Boolean);
+ fillBookCards("downloadList",[...normal,...purchased]);
+}
+
+async function openBook(id){
+ const b=await getItem("books",id);if(!b)return;
+ if(b.type==="premium"){
+  const approved=await approvedBooks();
+  if(!approved.some(p=>p.bookId===b.id)){alert("Purchase this book first.");return}
+ }
+ currentBook=b;
+ document.getElementById("readerTitle").textContent=b.name;
+ document.getElementById("readerMessage").textContent="Your PDF is ready. You can download it to read.";
+ showPage("reader");
+}
+async function downloadBook(id){
+ const b=await getItem("books",id);if(!b)return;
+ if(b.type==="premium"){
+  const approved=await approvedBooks();
+  if(!approved.some(p=>p.bookId===b.id)){alert("Purchase this book first.");return}
+ }
+ savePDF(b);
+}
+function savePDF(b){
+ const url=URL.createObjectURL(b.data);
+ const a=document.createElement("a");
+ a.href=url;a.download=b.filename||b.name+".pdf";
+ document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+function downloadCurrent(){if(currentBook)savePDF(currentBook)}
+function closeReader(){currentBook=null;showPage("library")}
+
+let paymentBook=null;
+async function startPayment(id){
+ paymentBook=await getItem("books",id);
+ if(!paymentBook)return;
+ const approved=await approvedBooks();
+ if(approved.some(p=>p.bookId===id)){
+  alert("You already own this book.");
+  openBook(id);return;
+ }
+ document.getElementById("payName").textContent=paymentBook.name;
+ document.getElementById("payPrice").textContent="₹"+paymentBook.price;
+ document.getElementById("utr").value="";
+ document.getElementById("paymentMessage").textContent="";
+ document.getElementById("qrcode").innerHTML="";
+ const upi="upi://pay?pa="+encodeURIComponent(UPI_ID)+"&pn=FOLIORA&am="+paymentBook.price+"&cu=INR&tn=BookPurchase";
+ new QRCode(document.getElementById("qrcode"),{text:upi,width:180,height:180});
+ showPage("payment");
+}
+function openUPI(){
+ window.location.href="upi://pay?pa="+encodeURIComponent(UPI_ID)+"&pn=FOLIORA&am="+paymentBook.price+"&cu=INR&tn=BookPurchase";
+}
+async function submitPayment(){
+ const utr=document.getElementById("utr").value.trim();
+ if(!utr){document.getElementById("paymentMessage").textContent="Enter UPI UTR.";return}
+ await addItem("requests",{bookId:paymentBook.id,utr:utr,status:"pending",date:Date.now()});
+ document.getElementById("paymentMessage").textContent="Payment submitted! Admin will approve shortly.";
+}
+
+async function renderAdmin(){
+ const books=await getAll("books");
+ const bList=document.getElementById("adminBooks");bList.innerHTML="";
+ books.forEach(b=>{
+  const d=document.createElement("div");d.className="panel";
+  d.innerHTML=`<p><b>${b.name}</b> (${b.type}) - ₹${b.price}</p>`;
+  const del=document.createElement("button");del.textContent="Delete Book";
+  del.onclick=async()=>{await deleteItem("books",b.id);renderAdmin()};
+  d.appendChild(del);bList.appendChild(d);
+ });
+
+ const req=await getAll("requests");
+ const rList=document.getElementById("paymentRequests");rList.innerHTML="";
+ req.filter(r=>r.status==="pending").forEach(r=>{
+  const b=books.find(x=>x.id===r.bookId);
+  const d=document.createElement("div");d.className="panel";
+  d.innerHTML=`<p>User wants: ${b?b.name:"Unknown"} | UTR: ${r.utr}</p>`;
+  const app=document.createElement("button");app.textContent="Approve";
+  app.onclick=async()=>{r.status="approved";await updateItem("requests",r);renderAdmin()};
+  const rej=document.createElement("button");rej.textContent="Reject";
+  rej.onclick=async()=>{await deleteItem("requests",r.id);renderAdmin()};
+  d.append(app,rej);rList.appendChild(d);
+ });
+}
+
+openDB().then(()=>{loadTheme();updateUser()});
+</script>
+</body>
+</html>
